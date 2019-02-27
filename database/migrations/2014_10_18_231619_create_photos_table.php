@@ -14,7 +14,7 @@ class CreatePhotosTable extends Migration
 	{
 		Schema::create('photos', function (Blueprint $table) {
 			$table->engine = 'InnoDB';
-			$table->increments('id');
+			$table->increments('id')->unsigned();
 			$table->unsignedInteger('language_id');
 			$table->foreign('language_id')->references('id')->on('languages');
 			$table->integer('position')->nullable();
@@ -30,6 +30,7 @@ class CreatePhotosTable extends Migration
 			$table->unsignedInteger('user_id_edited')->nullable();
 			$table->foreign('user_id_edited')->references('id')->on('users')->onDelete('set null');
 			$table->timestamps();
+            $table->softDeletes();
 		});
 	}
 

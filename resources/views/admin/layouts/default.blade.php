@@ -1,64 +1,73 @@
-@extends('layouts.sidenav')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{{-- Web site Title --}}
-@section('title')
-    Administration :: @parent
-@endsection
-
-{{-- Styles --}}
-@section('styles')
-    @parent
-
-    {{--<link href="{{asset('assets/admin/css/plugins/metisMenu/metisMenu.min.css')}}"--}}
-    {{--rel="stylesheet">--}}
-    {{--<link href="{{asset('assets/admin/css/sb-admin-2.css')}}"--}}
-    {{--rel="stylesheet">--}}
-    {{--<link href="{{asset('assets/admin/css/jquery.dataTables.css')}}"--}}
-    {{--rel="stylesheet">--}}
-    {{--<link href="{{asset('assets/admin/css/dataTables.bootstrap.css')}}"--}}
-    {{--rel="stylesheet">--}}
-    {{--<link href="{{asset('assets/admin/css/colorbox.css')}}" rel="stylesheet">--}}
-
-
-@endsection
-
-{{-- Sidebar --}}
-@section('sidebar')
+    <title>@section('title') Administration @show</title>
+    @section('meta_keywords')
+        <meta name="keywords" content="your, awesome, keywords, here"/>
+    @show @section('meta_author')
+        <meta name="author" content="Jon Doe"/>
+    @show @section('meta_description')
+        <meta name="description"
+              content="Lorem ipsum dolor sit amet, nihil fabulas et sea, nam posse menandri scripserit no, mei."/>
+    @show
+    <link href="{{ asset('css/admin.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/admin.js') }}"></script>
+    @yield('styles')
+</head>
+<body>
+<div id="wrapper">
     @include('admin.partials.nav')
-@endsection
+    <div id="page-wrapper">
+        @yield('main')
+    </div>
+</div>
 
-{{-- Scripts --}}
-@section('scripts')
-    @parent
-
-    {{-- Moved by Elixir--}}
-    <script src="{{asset('js/vendor/metisMenu.js')}}"></script>
-    <script src="{{asset('js/vendor/jquery.colorbox.js')}}"></script>
-    <script src="{{asset('js/vendor/dataTables.js')}}"></script>
-    <script src="{{asset('js/vendor/dataTables-bootstrap3.js')}}"></script>
-
-    {{-- Not yet a part of Elixir workflow --}}
-    {{--<script src="{{asset('assets/admin/js/jquery-migrate-1.2.1.min.js')}}"></script>--}}
-    {{--<script src="{{asset('assets/admin/js/jquery-ui.1.11.2.min.js')}}"></script>--}}
-    {{--<script src="{{asset('assets/admin/js/plugins/metisMenu/metisMenu.min.js')}}"></script>--}}
-    {{--<script src="{{asset('assets/admin/js/sb-admin-2.js')}}"></script>--}}
-
-    {{--<script src="{{asset('assets/admin/js/jquery.dataTables.min.js')}}"></script>--}}
-    {{--<script src="{{asset('assets/admin/js/dataTables.bootstrap.js')}}"></script>--}}
-    <script src="{{asset('assets/admin/js/bootstrap-dataTables-paging.js')}}"></script>
-    <script src="{{asset('assets/admin/js/datatables.fnReloadAjax.js')}}"></script>
-    <script src="{{asset('assets/admin/js/jquery.colorbox.js')}}"></script>
-    <script src="{{asset('assets/admin/js/modal.js')}}"></script>
-
-
-
-    {{-- Default admin scripts--}}
-    <script type="text/javascript">
-        {{-- from sb-admin-2 --}}
-        $(function () {
-            $('#menu').metisMenu();
+<script type="text/javascript">
+    @if(isset($type))
+    var oTable;
+    $(document).ready(function () {
+        oTable = $('#table').DataTable({
+            "oLanguage": {
+                "sProcessing": "{{ trans('table.processing') }}",
+                "sLengthMenu": "{{ trans('table.showmenu') }}",
+                "sZeroRecords": "{{ trans('table.noresult') }}",
+                "sInfo": "{{ trans('table.show') }}",
+                "sEmptyTable": "{{ trans('table.emptytable') }}",
+                "sInfoEmpty": "{{ trans('table.view') }}",
+                "sInfoFiltered": "{{ trans('table.filter') }}",
+                "sInfoPostFix": "",
+                "sSearch": "{{ trans('table.search') }}:",
+                "sUrl": "",
+                "oPaginate": {
+                    "sFirst": "{{ trans('table.start') }}",
+                    "sPrevious": "{{ trans('table.prev') }}",
+                    "sNext": "{{ trans('table.next') }}",
+                    "sLast": "{{ trans('table.last') }}"
+                }
+            },
+            "processing": true,
+            "serverSide": true,
+            "order": [],
+            "ajax": "{{ url('admin/'.$type.'/data') }}",
+            "pagingType": "full_numbers",
+            "fnDrawCallback": function (oSettings) {
+                $(".iframe").colorbox({
+                    iframe: true,
+                    width: "80%",
+                    height: "80%",
+                    onClosed: function () {
+                        oTable.ajax.reload();
+                    }
+                });
+            }
         });
-
-
-    </script>
-@endsection
+    });
+    @endif
+</script>
+@yield('scripts')
+</body>
+</html>

@@ -1,12 +1,19 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ArticleCategory extends Model
 {
 
-	protected $table = "article_categories";
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
+
+	protected $guarded  = array('id');
 
 	/**
 	 * Returns a formatted post content entry,
@@ -26,7 +33,7 @@ class ArticleCategory extends Model
 	 */
 	public function author()
 	{
-		return $this->belongsTo('App\User');
+		return $this->belongsTo(User::class, 'user_id');
 	}
 
 	/**
@@ -36,7 +43,7 @@ class ArticleCategory extends Model
 	 */
 	public function articles()
 	{
-		return $this->hasMany('App\Article');
+		return $this->hasMany(Article::class,'article_category_id');
 	}
 
 	/**
@@ -46,6 +53,6 @@ class ArticleCategory extends Model
 	 */
 	public function language()
 	{
-		return $this->belongsTo('App\Language');
+		return $this->belongsTo(Language::class,'language_id');
 	}
 }
